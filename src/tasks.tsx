@@ -1,7 +1,8 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { getJob, getTasks, punch, deleteTask } from "./data/idb";
+import { getJob, getTasks, punch, deleteTask, updateTask } from "./data/idb";
 import { Job } from "./data/job";
 import { Task } from "./data/task";
+import Field from "./field";
 import { formatCurrency, formatTimestamp, getHms, msToHours } from "./utils";
 
 export default function Tasks({currentJobId}: any) {
@@ -66,6 +67,11 @@ export default function Tasks({currentJobId}: any) {
     setTasks(await getTasks(currentJobId));
   }
 
+  async function handleChangeComment(task: Task) {
+    await updateTask(task);
+    setTasks(await getTasks(currentJobId));
+  }
+
   function formatTimeHms(time: number) {
     const [h, m, s] = getHms(time);
     return `${h}h ${m}m ${s}s`;
@@ -88,6 +94,7 @@ export default function Tasks({currentJobId}: any) {
             <td>Time</td>
             <td>Rate</td>
             <td>Total</td>
+            <td>Comment</td>
           </tr>
         </thead>
         <tbody>
@@ -101,6 +108,9 @@ export default function Tasks({currentJobId}: any) {
               <td>{formatTimeHms(diffTime(t.start, t.finish))}</td>
               <td>{job ? formatCurrency(job.rate) : null}</td>
               <td>{job ? formatCurrency(msToHours(diffTime(t.start, t.finish))*job.rate) : null}</td>
+              <td>
+                <Field value={t.comment} onChange={(comment: string) => handleChangeComment({...t, comment})} />
+              </td>
             </tr>
           ))}
         </tbody>

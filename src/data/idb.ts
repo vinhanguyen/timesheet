@@ -177,6 +177,32 @@ export function updateJob(job: Job): Promise<Job> {
   });
 }
 
+export function updateTask(task: Task): Promise<Task> {
+  return new Promise((resolve, reject) => {
+    const openDb = indexedDB.open(DB_NAME, DB_VERSION);
+  
+    openDb.onupgradeneeded = createDatabase;
+  
+    openDb.onerror = ({target: error}) => {
+      reject(error);
+    };
+  
+    openDb.onsuccess = ({target: {result: db}}: any) => {
+      const update = db.transaction(['tasks'], 'readwrite')
+        .objectStore('tasks')
+        .put(task);
+      
+      update.onsuccess = () => {
+        resolve(task);
+      };
+  
+      update.onerror = ({target: error}: any) => {
+        reject(error);
+      };
+    };
+  });
+}
+
 export function deleteJob(id: number): Promise<number> {
   return new Promise((resolve, reject) => {
     const openDb = indexedDB.open(DB_NAME, DB_VERSION);

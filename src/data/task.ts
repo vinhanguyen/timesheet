@@ -3,4 +3,5 @@ export interface Task {
   jobId: number;
   start: number;
   finish: number;
+  comment: string;
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function Field({
     type = 'text', 
-    value: initialValue, 
+    value: initialValue = '', 
     onChange = (value: any) => value
   }: any) {
   const [value, setValue] = useState(initialValue);
@@ -27,7 +27,7 @@ export default function Field({
           <button onClick={handleCancel}>Cancel</button>
         </>
       ) : (
-        <span onClick={() => setEdit(true)}>{value}</span>
+        <span onClick={() => setEdit(true)}>{value ? value : 'Empty'}</span>
       )}
     </>
   );
