@@ -1,0 +1,44 @@
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+}
+
+nav li {
+  cursor: pointer;
+}
+
+nav li.active {
+  font-weight: bold;
+}
+
+nav li, nav button, fieldset * {
+  margin-right: .5em;
+}
+
+button.start {
+  background-color: lightgreen;
+}
+
+button.stop {
+  background-color: lightsalmon;
+}
+
+fieldset {
+  border: solid 1px black;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: .5em;
+}
+
+td, th {
+  border: solid 1px black;
+  text-align: center;
+}
+
+tfoot td {
+  font-weight: bold;
+}
