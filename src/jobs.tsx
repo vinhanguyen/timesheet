@@ -58,7 +58,7 @@ export default function Jobs({currentJobId, onChangeJob = ((id: number) => conso
           {jobs.map(j => (
             <tr key={j.id}>
               <td>
-                <input type="radio" checked={j.id === currentJobId} onChange={() => handleChangeJob(j.id)} />
+                <input type="radio" title="Set current job" checked={j.id === currentJobId} onChange={() => handleChangeJob(j.id)} />
               </td>
               <td>
                 <Field value={j.name} onChange={(name: string) => handleUpdate({...j, name})} />

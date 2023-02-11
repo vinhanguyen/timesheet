@@ -98,7 +98,7 @@ export default function Tasks({currentJobId}: any) {
           </tr>
           <tr>
             <th>
-              <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
+              <input type="checkbox" title="Select all" checked={selectAll} onChange={handleSelectAll} />
             </th>
             <th>Start</th>
             <th>Finish</th>
@@ -112,7 +112,7 @@ export default function Tasks({currentJobId}: any) {
           {tasks.map(t => (
             <tr key={t.id}>
               <td>
-                <input type="checkbox" value={t.id} checked={selectedIds.some(id => id === t.id)} onChange={handleSelectSingle} />
+                <input type="checkbox" title="Select row" value={t.id} checked={selectedIds.some(id => id === t.id)} onChange={handleSelectSingle} />
               </td>
               <td>{formatTimestamp(t.start)}</td>
               <td>{t.finish ? formatTimestamp(t.finish) : null}</td>
@@ -129,7 +129,7 @@ export default function Tasks({currentJobId}: any) {
         <tfoot>
           <tr>
             <td colSpan={3}></td>
-            <td>{formatTimeHms(totalTime)} <span className="icon-button" onClick={handleCopy}>&#9112;</span></td>
+            <td>{formatTimeHms(totalTime)} <span className="icon-button" title="Copy hours to clipboard" onClick={handleCopy}>&#9112;</span></td>
             <td>{job ? formatCurrency(job.rate) : null}</td>
             <td>{job ? formatCurrency(msToHours(totalTime)*job.rate) : null}</td>
             <td></td>
