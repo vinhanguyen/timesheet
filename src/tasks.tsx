@@ -124,6 +124,7 @@ export default function Tasks({currentJobId}: any) {
               </td>
             </tr>
           ))}
+          {tasks.length === 0 && <tr><td colSpan={7}>Empty</td></tr>}
         </tbody>
         <tfoot>
           <tr>

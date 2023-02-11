@@ -71,6 +71,7 @@ export default function Jobs({currentJobId, onChangeJob = ((id: number) => conso
               </td>
             </tr>
           ))}
+          {jobs.length === 0 && <tr><td colSpan={4}>Empty</td></tr>}
         </tbody>
       </table>
     </>
