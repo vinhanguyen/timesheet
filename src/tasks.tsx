@@ -128,7 +128,7 @@ export default function Tasks({currentJobId}: any) {
         <tfoot>
           <tr>
             <td colSpan={3}></td>
-            <td onClick={handleCopy}>{formatTimeHms(totalTime)}</td>
+            <td>{formatTimeHms(totalTime)} <span className="icon-button" onClick={handleCopy}>&#9112;</span></td>
             <td>{job ? formatCurrency(job.rate) : null}</td>
             <td>{job ? formatCurrency(msToHours(totalTime)*job.rate) : null}</td>
             <td></td>

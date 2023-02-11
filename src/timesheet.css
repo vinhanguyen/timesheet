@@ -42,3 +42,7 @@ td, th {
 tfoot td {
   font-weight: bold;
 }
+
+.icon-button {
+  cursor: pointer;
+}
