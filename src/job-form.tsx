@@ -18,7 +18,9 @@ export default function JobForm({onSubmit = (job: Job) => console.log(job)}: any
   }
 
   return (
-    <div>
+    <fieldset>
+      <legend>Create Job</legend>
+
       <label htmlFor="name">Name: </label>
       <input id="name" value={name} onChange={e => setName(e.target.value)} />
 
@@ -26,7 +28,7 @@ export default function JobForm({onSubmit = (job: Job) => console.log(job)}: any
       <input id="rate" type="number" min="0" value={rate} onChange={e => setRate(Number(e.target.value))} />
       
       <button onClick={handleSubmit} disabled={!valid}>Submit</button>
-      <button onClick={reset}>Cancel</button>
-    </div>
+      <button onClick={reset} disabled={name === '' && rate === 0}>Cancel</button>
+    </fieldset>
   );
 }
