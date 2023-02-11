@@ -64,6 +64,7 @@ export default function Tasks({currentJobId}: any) {
       await deleteTask(id);
     }
     setSelectedIds([]);
+    setSelectAll(false);
     setTasks(await getTasks(currentJobId));
   }
 
@@ -86,15 +87,15 @@ export default function Tasks({currentJobId}: any) {
       <table>
         <thead>
           <tr>
-            <td>
+            <th>
               <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
-            </td>
-            <td>Start</td>
-            <td>Finish</td>
-            <td>Time</td>
-            <td>Rate</td>
-            <td>Total</td>
-            <td>Comment</td>
+            </th>
+            <th>Start</th>
+            <th>Finish</th>
+            <th>Time</th>
+            <th>Rate</th>
+            <th>Total</th>
+            <th>Comment</th>
           </tr>
         </thead>
         <tbody>
@@ -120,6 +121,7 @@ export default function Tasks({currentJobId}: any) {
             <td>{formatTimeHms(totalTime)}</td>
             <td>{job ? formatCurrency(job.rate) : null}</td>
             <td>{job ? formatCurrency(msToHours(totalTime)*job.rate) : null}</td>
+            <td></td>
           </tr>
         </tfoot>
       </table>
