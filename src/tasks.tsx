@@ -89,8 +89,8 @@ export default function Tasks({currentJobId}: any) {
       </nav>
       <table>
         <thead>
-          <tr>
-            <th colSpan={7}>{job?.name}</th>
+          <tr >
+            <th colSpan={7}>{job?.name || 'No job'}</th>
           </tr>
           <tr>
             <th>
