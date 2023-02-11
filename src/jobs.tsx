@@ -28,7 +28,10 @@ export default function Jobs({currentJobId, onChangeJob = ((id: number) => conso
     setJobs(await getJobs());
   }
 
-  async function handleDelete(id: number) {
+  async function handleDelete({id, name}: Job) {
+    if (!window.confirm(`Delete ${name}?`)) {
+      return;
+    }
     await deleteJob(id);
     setJobs(await getJobs());
     if (id === currentJobId) {
@@ -61,7 +64,7 @@ export default function Jobs({currentJobId, onChangeJob = ((id: number) => conso
                 $<Field type="number" value={j.rate} onChange={(rate: number) => handleUpdate({...j, rate})} />
               </td>
               <td>
-                <button onClick={() => handleDelete(j.id)}>Delete</button>
+                <button onClick={() => handleDelete(j)}>Delete</button>
               </td>
             </tr>
           ))}

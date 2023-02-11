@@ -60,6 +60,9 @@ export default function Tasks({currentJobId}: any) {
   }
 
   async function handleDelete() {
+    if (!window.confirm(`Delete selected task${selectedIds.length > 1 ? 's' : ''}?`)) {
+      return;
+    }
     for (const id of selectedIds) {
       await deleteTask(id);
     }
