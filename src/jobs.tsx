@@ -45,6 +45,9 @@ export default function Jobs({currentJobId, onChangeJob = ((id: number) => conso
       <table>
         <thead>
           <tr>
+            <th colSpan={4}>Jobs</th>
+          </tr>
+          <tr>
             <th></th>
             <th>Name</th>
             <th>Rate</th>
