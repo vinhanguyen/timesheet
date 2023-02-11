@@ -3,7 +3,7 @@ import { getJob, getTasks, punch, deleteTask, updateTask } from "./data/idb";
 import { Job } from "./data/job";
 import { Task } from "./data/task";
 import Field from "./field";
-import { formatCurrency, formatTimestamp, getHms, msToHours } from "./utils";
+import { copyToClipboard, formatCurrency, formatTimestamp, getHms, msToHours } from "./utils";
 
 export default function Tasks({currentJobId}: any) {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -81,6 +81,10 @@ export default function Tasks({currentJobId}: any) {
     return `${h}h ${m}m ${s}s`;
   }
 
+  function handleCopy() {
+    copyToClipboard(msToHours(totalTime).toFixed(2));
+  }
+
   return (
     <>
       <nav>
@@ -124,7 +128,7 @@ export default function Tasks({currentJobId}: any) {
         <tfoot>
           <tr>
             <td colSpan={3}></td>
-            <td>{formatTimeHms(totalTime)}</td>
+            <td onClick={handleCopy}>{formatTimeHms(totalTime)}</td>
             <td>{job ? formatCurrency(job.rate) : null}</td>
             <td>{job ? formatCurrency(msToHours(totalTime)*job.rate) : null}</td>
             <td></td>
