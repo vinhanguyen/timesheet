@@ -82,10 +82,13 @@ export default function Tasks({currentJobId}: any) {
     <>
       <nav>
         <button onClick={handleDelete} disabled={selectedIds.length === 0}>Delete</button>
-        <button onClick={handlePunch} disabled={!currentJobId}>{unfinishedTask ? 'Stop' : 'Start'}</button>
+        <button onClick={handlePunch} disabled={!currentJobId} className={unfinishedTask ? 'stop' : 'start'}>{unfinishedTask ? 'Stop' : 'Start'}</button>
       </nav>
       <table>
         <thead>
+          <tr>
+            <th colSpan={7}>{job?.name}</th>
+          </tr>
           <tr>
             <th>
               <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
