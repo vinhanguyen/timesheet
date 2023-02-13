@@ -1,8 +1,5 @@
-import { Menu as MenuIcon } from "@mui/icons-material";
-import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
-import { MouseEvent, useEffect, useState } from "react";
-import { getCurrentJobId, getJob } from "./data/idb";
-import { Job } from "./data/job";
+import { useEffect, useState } from "react";
+import { getCurrentJobId } from "./data/idb";
 import Jobs from "./jobs";
 import Nav from "./nav";
 import Tasks from "./tasks";
