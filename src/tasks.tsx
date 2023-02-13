@@ -1,5 +1,7 @@
+import { ContentCopy, Delete, PunchClock } from "@mui/icons-material";
+import { Checkbox, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
-import { getJob, getTasks, punch, deleteTask, updateTask } from "./data/idb";
+import { deleteTask, getJob, getTasks, punch, updateTask } from "./data/idb";
 import { Job } from "./data/job";
 import { Task } from "./data/task";
 import Field from "./field";
@@ -87,55 +89,80 @@ export default function Tasks({currentJobId}: any) {
 
   return (
     <>
-      <nav>
-        <button onClick={handleDelete} disabled={selectedIds.length === 0}>Delete</button>
-        <button onClick={handlePunch} disabled={!currentJobId} className={unfinishedTask ? 'stop' : 'start'}>{unfinishedTask ? 'Stop' : 'Start'}</button>
-      </nav>
-      <table>
-        <thead>
-          <tr >
-            <th colSpan={7}>{job?.name || 'No job'}</th>
-          </tr>
-          <tr>
-            <th>
-              <input type="checkbox" title="Select all" checked={selectAll} onChange={handleSelectAll} />
-            </th>
-            <th>Start</th>
-            <th>Finish</th>
-            <th>Time</th>
-            <th>Rate</th>
-            <th>Total</th>
-            <th>Comment</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>
+              <Tooltip title="Delete selected">
+                <span>
+                  <IconButton onClick={handleDelete} disabled={selectedIds.length === 0}>
+                    <Delete />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </TableCell>
+            <TableCell colSpan={6}>
+              <Tooltip title={unfinishedTask ? 'Stop' : 'Start'}>
+                <span>
+                  <IconButton sx={{paddingLeft: 0, paddingRight: 0}} color={unfinishedTask ? 'error' : 'success'} onClick={handlePunch} disabled={!currentJobId}>
+                    <PunchClock />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>
+              <Tooltip title="Select all">
+                <Checkbox checked={selectAll} onChange={handleSelectAll} />
+              </Tooltip>
+            </TableCell>
+            <TableCell>Start</TableCell>
+            <TableCell>Finish</TableCell>
+            <TableCell>Time</TableCell>
+            <TableCell>Rate</TableCell>
+            <TableCell>Total</TableCell>
+            <TableCell>Comment</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {tasks.map(t => (
-            <tr key={t.id}>
-              <td>
-                <input type="checkbox" title="Select row" value={t.id} checked={selectedIds.some(id => id === t.id)} onChange={handleSelectSingle} />
-              </td>
-              <td>{formatTimestamp(t.start)}</td>
-              <td>{t.finish ? formatTimestamp(t.finish) : null}</td>
-              <td>{formatTimeHms(diffTime(t.start, t.finish))}</td>
-              <td>{job ? formatCurrency(job.rate) : null}</td>
-              <td>{job ? formatCurrency(msToHours(diffTime(t.start, t.finish))*job.rate) : null}</td>
-              <td>
-                <Field value={t.comment} onChange={(comment: string) => handleChangeComment({...t, comment})} />
-              </td>
-            </tr>
+            <TableRow key={t.id}>
+              <TableCell>
+                <Tooltip title="Select row">
+                  <Checkbox value={t.id} checked={selectedIds.some(id => id === t.id)} onChange={handleSelectSingle} />
+                </Tooltip>
+              </TableCell>
+              <TableCell>{formatTimestamp(t.start)}</TableCell>
+              <TableCell>{t.finish ? formatTimestamp(t.finish) : null}</TableCell>
+              <TableCell>{formatTimeHms(diffTime(t.start, t.finish))}</TableCell>
+              <TableCell>{job ? formatCurrency(job.rate) : null}</TableCell>
+              <TableCell>{job ? formatCurrency(msToHours(diffTime(t.start, t.finish))*job.rate) : null}</TableCell>
+              <TableCell>
+                <Field value={t.comment || ''} 
+                  onChange={(comment: any) => handleChangeComment({...t, comment})} 
+                  validator={(comment: any) => comment?.length > 0} />
+              </TableCell>
+            </TableRow>
           ))}
-          {tasks.length === 0 && <tr><td colSpan={7}>Empty</td></tr>}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan={3}></td>
-            <td>{formatTimeHms(totalTime)} <span className="icon-button" title="Copy hours to clipboard" onClick={handleCopy}>&#9112;</span></td>
-            <td>{job ? formatCurrency(job.rate) : null}</td>
-            <td>{job ? formatCurrency(msToHours(totalTime)*job.rate) : null}</td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
+        </TableBody>
+        <TableHead>
+          <TableRow>
+            <TableCell colSpan={3}></TableCell>
+            <TableCell component="th">
+              {formatTimeHms(totalTime)}
+              <Tooltip title="Copy hours to clipboard">
+                <IconButton onClick={handleCopy}>
+                  <ContentCopy />
+                </IconButton>
+              </Tooltip>
+            </TableCell>
+            <TableCell>{job ? formatCurrency(job.rate) : null}</TableCell>
+            <TableCell>{job ? formatCurrency(msToHours(totalTime)*job.rate) : null}</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead>
+      </Table>
     </>
   );
 }

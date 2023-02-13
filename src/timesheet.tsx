@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
-import { getCurrentJobId } from "./data/idb";
+import { Menu as MenuIcon } from "@mui/icons-material";
+import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import { MouseEvent, useEffect, useState } from "react";
+import { getCurrentJobId, getJob } from "./data/idb";
+import { Job } from "./data/job";
 import Jobs from "./jobs";
+import Nav from "./nav";
 import Tasks from "./tasks";
-import './timesheet.css';
 
 export default function Timesheet() {
   const [currentJobId, setCurrentJobId] = useState<number|null>(null);
-  const [tab, setTab] = useState(0);
+  const [page, setPage] = useState('tasks');
 
   useEffect(() => {
     (async () => {
@@ -16,14 +19,9 @@ export default function Timesheet() {
 
   return (
     <>
-      <nav>
-        <ul>
-          <li onClick={() => setTab(0)} className={tab === 0 ? 'active' : ''}>Timesheet</li>
-          <li onClick={() => setTab(1)} className={tab === 1 ? 'active' : ''}>Jobs</li>
-        </ul>
-      </nav>
-      {tab === 0 && <Tasks currentJobId={currentJobId} />}
-      {tab === 1 && <Jobs currentJobId={currentJobId} onChangeJob={setCurrentJobId} />}
+      <Nav currentJobId={currentJobId} page={page} onChangePage={(page: string) => setPage(page)} />
+      {page === 'tasks' && <Tasks currentJobId={currentJobId} />}
+      {page === 'jobs' && <Jobs currentJobId={currentJobId} onChangeJob={setCurrentJobId} />}
     </>
   );
 }

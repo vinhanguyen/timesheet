@@ -1,11 +1,13 @@
+import { Add, Cancel, Delete, Save } from "@mui/icons-material";
+import { IconButton, Input, Radio, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import { createJob, deleteJob, getJobs, updateCurrentJob, updateJob } from "./data/idb";
 import { Job } from "./data/job";
 import Field from "./field";
-import JobForm from "./job-form";
 
-export default function Jobs({currentJobId, onChangeJob = ((id: number) => console.log(id))}: any) {
+export default function Jobs({currentJobId, onChangeJob}: any) {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [create, setCreate] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -13,8 +15,9 @@ export default function Jobs({currentJobId, onChangeJob = ((id: number) => conso
     })();
   }, [currentJobId]);
 
-  async function handleSubmit(job: Job) {
+  async function handleCreate(job: Job) {
     await createJob(job);
+    setCreate(false);
     setJobs(await getJobs());
   }
 
@@ -41,39 +44,98 @@ export default function Jobs({currentJobId, onChangeJob = ((id: number) => conso
 
   return (
     <>
-      <JobForm onSubmit={handleSubmit} />
-      <table>
-        <thead>
-          <tr>
-            <th colSpan={4}>Jobs</th>
-          </tr>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Rate</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>
+              <Tooltip title="Add job" onClick={() => setCreate(true)}>
+                <IconButton sx={{paddingLeft: 0, paddingRight: 0}}>
+                  <Add />
+                </IconButton>
+              </Tooltip>
+            </TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Rate</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {jobs.map(j => (
-            <tr key={j.id}>
-              <td>
-                <input type="radio" title="Set current job" checked={j.id === currentJobId} onChange={() => handleChangeJob(j.id)} />
-              </td>
-              <td>
-                <Field value={j.name} onChange={(name: string) => handleUpdate({...j, name})} />
-              </td>
-              <td>
-                $<Field type="number" value={j.rate} onChange={(rate: number) => handleUpdate({...j, rate})} />
-              </td>
-              <td>
-                <button onClick={() => handleDelete(j)}>Delete</button>
-              </td>
-            </tr>
+            <TableRow key={j.id}>
+              <TableCell>
+                <Tooltip title="Set current job">
+                  <Radio sx={{paddingLeft: 0, paddingRight: 0}} checked={j.id === currentJobId} onChange={() => handleChangeJob(j.id)} />
+                </Tooltip>
+              </TableCell>
+              <TableCell>
+                <Field value={j.name} 
+                  onChange={(name: any) => handleUpdate({...j, name})} 
+                  validator={(name: any) => name?.length > 0} />
+              </TableCell>
+              <TableCell>
+                <Field value={j.rate} 
+                  onChange={(rate: any) => handleUpdate({...j, rate: Number(rate)})} 
+                  validator={(rate: any) => rate && Number(rate) >= 0} 
+                  prefix="$" />
+              </TableCell>
+              <TableCell>
+                <Tooltip title="Delete">
+                  <IconButton onClick={() => handleDelete(j)}>
+                    <Delete />
+                  </IconButton>
+                </Tooltip>
+              </TableCell>
+            </TableRow>
           ))}
-          {jobs.length === 0 && <tr><td colSpan={4}>Empty</td></tr>}
-        </tbody>
-      </table>
+          {create && <CreateJobRow onSave={handleCreate} onCancel={() => setCreate(false)} />}
+        </TableBody>
+      </Table>
     </>
+  );
+}
+
+function CreateJobRow({onSave, onCancel}: any) {
+  const [name, setName] = useState('');
+  const [rate, setRate] = useState('');
+
+  function handleSave() {
+    onSave({name, rate: Number(rate)});
+  }
+
+  function handleCancel() {
+    setName('');
+    setRate('');
+    onCancel();
+  }
+
+  const nameValid = name.length > 0;
+  const rateValid = rate.length > 0 && Number(rate) >= 0;
+  const valid = nameValid && rateValid;
+
+  return (
+    <TableRow>
+      <TableCell></TableCell>
+      <TableCell>
+        <Input value={name} error={!nameValid} onChange={e => setName(e.target.value)} />
+      </TableCell>
+      <TableCell>
+        <Input value={rate} error={!rateValid} onChange={e => setRate(e.target.value)} 
+          startAdornment={<>$</>} />
+      </TableCell>
+      <TableCell>
+        <Tooltip title="Save">
+          <span>
+            <IconButton disabled={!valid} onClick={handleSave}>
+              <Save />
+            </IconButton>
+          </span>
+        </Tooltip>
+        <Tooltip title="Cancel">
+          <IconButton onClick={handleCancel}>
+            <Cancel />
+          </IconButton>
+        </Tooltip>
+      </TableCell>
+    </TableRow>
   );
 }
