@@ -102,7 +102,7 @@ export default function Tasks({currentJobId}: any) {
               </Tooltip>
             </TableCell>
             <TableCell colSpan={6}>
-              <Tooltip title={unfinishedTask ? 'Stop' : 'Start'}>
+              <Tooltip title={currentJobId ? (unfinishedTask ? 'Stop' : 'Start') : 'No current job'}>
                 <span>
                   <IconButton sx={{paddingLeft: 0, paddingRight: 0}} color={unfinishedTask ? 'error' : 'success'} onClick={handlePunch} disabled={!currentJobId}>
                     <PunchClock />

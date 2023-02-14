@@ -1,5 +1,5 @@
 import { Menu as MenuIcon } from "@mui/icons-material";
-import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import { AppBar, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from "@mui/material";
 import { MouseEvent, useEffect, useState } from "react";
 import { getJob } from "./data/idb";
 import { Job } from "./data/job";
@@ -29,10 +29,12 @@ export default function Nav({currentJobId, page, onChangePage}: any) {
     <>
       <AppBar position="static">
         <Toolbar>
-          <IconButton color="inherit" sx={{paddingLeft: 0}} onClick={handleClick}>
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6">{page === 'tasks' ? job?.name : 'Jobs'}</Typography>
+          <Tooltip title="Menu">
+            <IconButton color="inherit" sx={{paddingLeft: 0}} onClick={handleClick}>
+              <MenuIcon />
+            </IconButton>
+          </Tooltip>
+          <Typography variant="h6">{page === 'tasks' ? (currentJobId ? job?.name : 'Timesheet') : 'Jobs'}</Typography>
         </Toolbar>
       </AppBar>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
