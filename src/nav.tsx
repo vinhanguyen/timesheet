@@ -3,18 +3,25 @@ import { AppBar, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from
 import { MouseEvent, useEffect, useState } from "react";
 import { getJob } from "./data/idb";
 import { Job } from "./data/job";
+import HelpDialog from "./HelpDialog";
 
 export default function Nav({currentJobId, page, onChangePage}: any) {
   const [job, setJob] = useState<null|Job>(null);
   const [anchorEl, setAnchorEl] = useState<null|HTMLElement>(null);
+  const [showHelp, setShowHelp] = useState(false);
 
   const open = Boolean(anchorEl);
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => setAnchorEl(e.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
-  function handleClickItem(page: string) {
+  function handleClickPage(page: string) {
     setAnchorEl(null);
     onChangePage(page);
+  }
+
+  function handleClickHelp() {
+    setAnchorEl(null);
+    setShowHelp(true);
   }
 
   useEffect(() => {
@@ -27,6 +34,7 @@ export default function Nav({currentJobId, page, onChangePage}: any) {
 
   return (
     <>
+      <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />
       <AppBar position="static">
         <Toolbar>
           <Tooltip title="Menu">
@@ -38,8 +46,9 @@ export default function Nav({currentJobId, page, onChangePage}: any) {
         </Toolbar>
       </AppBar>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        {page === 'jobs' && <MenuItem onClick={() => handleClickItem('tasks')}>Timesheet</MenuItem>}
-        {page === 'tasks' && <MenuItem onClick={() => handleClickItem('jobs')}>Jobs</MenuItem>}
+        {page === 'jobs' && <MenuItem onClick={() => handleClickPage('tasks')}>Timesheet</MenuItem>}
+        {page === 'tasks' && <MenuItem onClick={() => handleClickPage('jobs')}>Jobs</MenuItem>}
+        <MenuItem onClick={handleClickHelp}>Help</MenuItem>
       </Menu>
     </>
   );
