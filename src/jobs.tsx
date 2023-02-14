@@ -1,6 +1,7 @@
 import { Add, Cancel, Delete, Save } from "@mui/icons-material";
 import { IconButton, Input, Radio, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
+import ConfirmDialog from "./confirm-dialog";
 import { createJob, deleteJob, getJobs, updateCurrentJob, updateJob } from "./data/idb";
 import { Job } from "./data/job";
 import Field from "./field";
@@ -8,6 +9,8 @@ import Field from "./field";
 export default function Jobs({currentJobId, onChangeJob}: any) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [create, setCreate] = useState(false);
+  const [deletedJob, setDeletedJob] = useState<Job|null>(null);
+  const [needConfirm, setNeedConfirm] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -31,19 +34,30 @@ export default function Jobs({currentJobId, onChangeJob}: any) {
     setJobs(await getJobs());
   }
 
-  async function handleDelete({id, name}: Job) {
-    if (!window.confirm(`Delete ${name}?`)) {
-      return;
-    }
-    await deleteJob(id);
-    setJobs(await getJobs());
-    if (id === currentJobId) {
-      onChangeJob(null);
+  function handleDelete(job: Job) {
+    setDeletedJob(job);
+    setNeedConfirm(true);
+  }
+
+  async function handleConfirm(confirm: boolean) {
+    setDeletedJob(null);
+    setNeedConfirm(false);
+    
+    if (confirm && deletedJob) {
+      const {id} = deletedJob;
+      await deleteJob(id);
+      setJobs(await getJobs());
+      if (id === currentJobId) {
+        onChangeJob(null);
+      }
     }
   }
 
   return (
     <>
+      <ConfirmDialog open={needConfirm} onClose={handleConfirm}>
+        Delete {deletedJob?.name}?
+      </ConfirmDialog>
       <Table>
         <TableHead>
           <TableRow>

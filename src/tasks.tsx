@@ -1,6 +1,7 @@
 import { ContentCopy, Delete, PunchClock } from "@mui/icons-material";
 import { Checkbox, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
+import ConfirmDialog from "./confirm-dialog";
 import { deleteTask, getJob, getTasks, punch, updateTask } from "./data/idb";
 import { Job } from "./data/job";
 import { Task } from "./data/task";
@@ -13,6 +14,7 @@ export default function Tasks({currentJobId}: any) {
   const [now, setNow] = useState(Date.now());
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [needConfirm, setNeedConfirm] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -61,16 +63,21 @@ export default function Tasks({currentJobId}: any) {
     }
   }
 
-  async function handleDelete() {
-    if (!window.confirm(`Delete selected task${selectedIds.length > 1 ? 's' : ''}?`)) {
-      return;
+  function handleDelete() {
+    setNeedConfirm(true);
+  }
+
+  async function handleConfirm(confirm: boolean) {
+    setNeedConfirm(false);
+
+    if (confirm) {
+      for (const id of selectedIds) {
+        await deleteTask(id);
+      }
+      setSelectedIds([]);
+      setSelectAll(false);
+      setTasks(await getTasks(currentJobId));
     }
-    for (const id of selectedIds) {
-      await deleteTask(id);
-    }
-    setSelectedIds([]);
-    setSelectAll(false);
-    setTasks(await getTasks(currentJobId));
   }
 
   async function handleChangeComment(task: Task) {
@@ -89,6 +96,9 @@ export default function Tasks({currentJobId}: any) {
 
   return (
     <>
+      <ConfirmDialog open={needConfirm} onClose={handleConfirm}>
+        Delete selected task{selectedIds.length > 1 ? 's' : ''}?
+      </ConfirmDialog>
       <Table>
         <TableHead>
           <TableRow>
@@ -102,7 +112,7 @@ export default function Tasks({currentJobId}: any) {
               </Tooltip>
             </TableCell>
             <TableCell colSpan={6}>
-              <Tooltip title={currentJobId ? (unfinishedTask ? 'Stop' : 'Start') : 'No current job'}>
+              <Tooltip title={unfinishedTask ? 'Stop' : 'Start'}>
                 <span>
                   <IconButton sx={{paddingLeft: 0, paddingRight: 0}} color={unfinishedTask ? 'error' : 'success'} onClick={handlePunch} disabled={!currentJobId}>
                     <PunchClock />
